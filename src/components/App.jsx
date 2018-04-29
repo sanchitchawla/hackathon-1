@@ -15,34 +15,67 @@ import Login from './Login';
 import Signup from './Signup';
 
 const theme = createMuiTheme();
-
 class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: true,
-            authenticated: false,
-            currentUser: null };
-        }
 
-    componentWillMount() { auth.onAuthStateChanged(user => {
-        if (user) {
-            this.setState({
+  state = {
+                loading: true,
+            authenticated: false,
+            currentUser: null,
+            verification: false
+           };
+    componentWillMount() {
+      auth.onAuthStateChanged(user => {
+
+        if (user){
+          if (user.providerData.providerId !== "password"){
+            // TODO: no need to check if email is verified
+            const nextState = {
                 authenticated: true,
                 currentUser: user,
-                loading: false },
-                () => { this.props.history.push('/') }
+                loading: false,
+                verification: true
+            };
+
+
+            this.setState(nextState,
+                () => this.props.history.push('/')
+
             );
+          } else {
+            // TODO: check if email verified
+            const nextState = {
+                authenticated: true,
+                currentUser: user,
+                loading: false,
+                verification: true
+            };
+
+            if (user.emailVerified) {
+                this.setState(nextState,
+                  () => {
+                    this.props.history.push('/')
+                  }
+              );
+            } else {
+              // console.log("winnner")
+              // this.setState({verification: false, authenticated: false, currentUser: null, loading: false})
+              // this.props.history.push("/login"
+              // console.log(user.providerData);
+              auth.signOut()
+              alert("verification needed")
+            }
+          }
         } else {
             this.setState({
                 authenticated: false,
                 currentUser: null,
-                loading: false
+                loading: false,
+                verification: false
             });
         }
-        });
-    }
+    })
+  }
 
     render () {
         const { authenticated, loading } = this.state;

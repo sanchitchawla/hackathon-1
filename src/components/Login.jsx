@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { auth } from '../firebase';
+import firebase, { auth } from '../firebase';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -25,7 +25,8 @@ class Login extends Component {
         super(props);
         this.state = {
             email : "",
-            password : ""
+            password : "",
+            forgot: false
         }
         this.onSubmit = this.onSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -34,13 +35,89 @@ class Login extends Component {
     onSubmit(event) {
         event.preventDefault();
         const { email, password } = this.state;
-        auth.signInWithEmailAndPassword(email, password)
-        .then(authUser => {
-            console.log(authUser);
-        })
-        .catch(authError => {
-            alert(authError);
-        })
+        if (email && password) {
+          auth.signInWithEmailAndPassword(email, password)
+          .then(authUser => {
+              console.log(authUser);
+          })
+          .catch(authError => {
+              alert(authError);
+          })
+        } else {
+
+        }
+    }
+
+    onClickForgot = () => {
+      const {email} = this.state
+      auth.sendPasswordResetEmail(email)
+      alert("Sent email ")
+    }
+
+    onClickFacebook = () => {
+      if (!auth.currentUser) {
+        var provider = new firebase.auth.FacebookAuthProvider();
+
+        auth.signInWithPopup(provider).then(function(result) {
+          // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+
+        }).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // [START_EXCLUDE]
+        if (errorCode === 'auth/account-exists-with-different-credential') {
+            alert('You have already signed up with a different auth provider for that email.');
+            // If you are using multiple auth providers on your app you should handle linking
+            // the user's accounts here.
+        } else {
+            console.error(error);
+        }
+      });
+      }
+      else {
+        auth.signOut();
+      }
+    }
+
+    onClickGoogle = () => {
+      if (!auth.currentUser) {
+        var provider = new firebase.auth.GoogleAuthProvider();
+
+        auth.signInWithPopup(provider).then(function(result) {
+          // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+
+        }).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // [START_EXCLUDE]
+        if (errorCode === 'auth/account-exists-with-different-credential') {
+            alert('You have already signed up with a different auth provider for that email.');
+            // If you are using multiple auth providers on your app you should handle linking
+            // the user's accounts here.
+        } else {
+            console.error(error);
+        }
+      });
+      }
+      else {
+        auth.signOut();
+      }
     }
 
     handleChange = name => event => {
@@ -57,7 +134,7 @@ class Login extends Component {
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
                         <h1>Log in</h1>
-                        <form onSubmit={this.onSubmit} autoComplete="off">
+
                             <TextField
                               id="email"
                               label="Email"
@@ -78,8 +155,10 @@ class Login extends Component {
                               type="password"
                             />
                             <br />
-                            <Button variant="raised" color="primary" type="submit">Log in</Button>
-                        </form>
+                            <Button variant="raised" color="primary" onClick={this.onSubmit} >Log in</Button>
+                            <Button variant="raised" color="primary" onClick={this.onClickForgot}>Forgot Password</Button>
+                            <Button variant="raised" color="primary" onClick={this.onClickFacebook}>Log in with Facebook</Button>
+                            <Button variant="raised" color="primary" onClick={this.onClickGoogle}>Log in with Google</Button>
                         <p>Dont have an account? <Link to="/signup">Sign up here</Link></p>
                     </Paper>
                 </Grid>

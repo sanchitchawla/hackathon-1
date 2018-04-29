@@ -6,6 +6,9 @@ import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+import Dialog, {DialogTitle} from 'material-ui/Dialog';
+// import FlatButton from 'material-ui/FlatButton';
+// import RaisedButton from 'material-ui/RaisedButton';
 
 const styles = theme => ({
   root: {
@@ -26,20 +29,29 @@ class Signup extends Component {
             email : "",
             password : ""
         }
-        this.onSubmit = this.onSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
-    onSubmit(event) {
+    onSubmit = event => {
         event.preventDefault();
         const { email, password } = this.state;
+
         auth.createUserWithEmailAndPassword(email, password)
         .then(authUser => {
-            console.log(authUser);
+          this.handleSignup()
+          this.handleOpen()
         })
         .catch(authError => {
             alert(authError);
         })
+    }
+
+    handleSignup = () => {
+      const user = auth.currentUser;
+      user.sendEmailVerification().then(() => {
+        // tell user that email has been send
+      }).catch((error) => {
+        // whatever
+      });
     }
 
     handleChange = name => event => {
@@ -49,10 +61,9 @@ class Signup extends Component {
     };
 
     render() {
-        const { email, password } = this.state;
-        const classes = this.props.classes;
+        const { email, password} = this.state;
+        const {classes, ...other} = this.props;
         return (
-            <div>
                 <Grid container>
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
@@ -79,11 +90,11 @@ class Signup extends Component {
                                 />
                                 <br />
                                 <Button variant="raised" color="primary" type="submit">Sign up</Button>
+
                             </form>
                         </Paper>
                     </Grid>
                 </Grid>
-            </div>
         );
     }
 }
