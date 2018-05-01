@@ -14,6 +14,8 @@ import List, {
     ListItemSecondaryAction,
 } from 'material-ui/List';
 
+import _ from 'lodash'
+
 
 const styles = theme => ({
     root: {
@@ -62,6 +64,20 @@ class Main extends Component {
             let note = { text: snapshot.val(), id: snapshot.key };
             this.setState({ notes: [note].concat(this.state.notes) });
         })
+
+        notesRef.on('child_removed', snapshot => {
+            // let note = { text: snapshot.val(), id: snapshot.key };
+
+            // this.setState({ current : "" });
+
+            console.log("remove: ", snapshot.val())
+
+
+            const {notes} = this.state;
+            this.setState((prevState) => ({notes: [..._.without(prevState.notes, _.find(prevState.notes, {text: snapshot.val()}))]}))
+
+
+        })
     }
 
     handleChange = name => event => {
@@ -78,6 +94,21 @@ class Main extends Component {
         this.setState({ current : "" });
     }
 
+    deleteNote = (i) => () => {
+      // e.preventDefault();
+      const uid = auth.currentUser.uid;
+      const newData = this.state.notes;
+      const eachNote = newData[i]
+      console.log(eachNote);
+
+      // db.ref.child("notes").orderByKey().equalTo(eachNote).getRef().remove();
+
+      var abc = db.ref('notes/' + uid);
+      abc.child(eachNote.id).remove();
+
+      // TODO: Remove element at i
+    }
+
     render() {
         const classes = this.props.classes;
         return (
@@ -91,7 +122,7 @@ class Main extends Component {
                                         <ListItem key={note.id}>
                                             <ListItemText primary={(index+1) + '. ' + note.text}/>
                                             <ListItemSecondaryAction>
-                                              <IconButton aria-label="Delete">
+                                              <IconButton aria-label="Delete" onClick={this.deleteNote(index)}>
                                                 <DeleteIcon />
                                               </IconButton>
                                             </ListItemSecondaryAction>
