@@ -66,13 +66,7 @@ class Main extends Component {
         })
 
         notesRef.on('child_removed', snapshot => {
-            // let note = { text: snapshot.val(), id: snapshot.key };
-
-            // this.setState({ current : "" });
-
             console.log("remove: ", snapshot.val())
-
-
             const {notes} = this.state;
             this.setState((prevState) => ({notes: [..._.without(prevState.notes, _.find(prevState.notes, {text: snapshot.val()}))]}))
 
@@ -101,12 +95,9 @@ class Main extends Component {
       const eachNote = newData[i]
       console.log(eachNote);
 
-      // db.ref.child("notes").orderByKey().equalTo(eachNote).getRef().remove();
-
       var abc = db.ref('notes/' + uid);
       abc.child(eachNote.id).remove();
 
-      // TODO: Remove element at i
     }
 
     render() {
@@ -115,7 +106,7 @@ class Main extends Component {
             <Grid container className={classes.container}>
                 <Grid item xs={6}>
                     <Paper className={classes.paper}>
-                        <p>Hello, { auth.currentUser.email }</p>
+                        <p>Hello, { auth.currentUser.displayName }</p>
                             <List className={classes.list}>
                                 { /* Render the list of messages */
                                     this.state.notes.map( (note,index) =>
@@ -149,3 +140,26 @@ class Main extends Component {
 }
 
 export default withStyles(styles)(Main);
+
+
+// <form onSubmit={this.onClickReset} autoComplete="off">
+//     <TextField
+//         id="password"
+//         label="New password"
+//         className={classes.password}
+//         onChange={this.handleChange('pass')}
+//         margin="normal"
+//         type="password"
+//     />
+//     <Button variant="raised" color="primary" type="submit"> Change password</Button>
+// </form>
+
+// onClickReset = () => {
+//   const password = this.state.password
+//   console.log(password)
+//   auth.currentUser.updatePassword(password).then(function() {
+//     // Update successful.
+//   }).catch(function(error) {
+//     // An error happened.
+//   });
+// }

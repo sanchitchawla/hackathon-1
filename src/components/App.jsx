@@ -13,17 +13,25 @@ import PrivateRoute from './PrivateRoute';
 import Main from './Main';
 import Login from './Login';
 import Signup from './Signup';
+import EditUserProfile from "./EditUserProfile";
 
 const theme = createMuiTheme();
 class App extends Component {
 
 
   state = {
-                loading: true,
+            loading: true,
             authenticated: false,
             currentUser: null,
-            verification: false
+            verification: false,
+            displayName : ""
            };
+
+  updateDisplayName = (name) => {
+        this.setState({
+            displayName: name,
+        })
+    }
     componentWillMount() {
       auth.onAuthStateChanged(user => {
 
@@ -43,7 +51,6 @@ class App extends Component {
 
             );
           } else {
-            // TODO: check if email verified
             const nextState = {
                 authenticated: true,
                 currentUser: user,
@@ -58,10 +65,6 @@ class App extends Component {
                   }
               );
             } else {
-              // console.log("winnner")
-              // this.setState({verification: false, authenticated: false, currentUser: null, loading: false})
-              // this.props.history.push("/login"
-              // console.log(user.providerData);
               auth.signOut()
               alert("verification needed")
             }
@@ -93,6 +96,7 @@ class App extends Component {
                     />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={Signup} />
+                <Route exact path="/edituserprofile" component={() => <EditUserProfile updateDisplayName={this.updateDisplayName} />}  />
             </div>
         );
         return (
@@ -104,11 +108,19 @@ class App extends Component {
                                 Simple Note
                             </Typography>
                             { authenticated &&
+                              <div>
                                 <Button
                                 variant="raised"
                                 color="default"
                                 onClick={() => auth.signOut()}>Log out
-                                </Button>
+                              </Button>
+
+                              <Button
+                                variant="raised"
+                                color="default"
+                                 onClick={() => this.props.history.push("/edituserprofile") }> Edit Profile
+                              </Button>
+                              </div>
                             }
                         </Toolbar>
                     </AppBar>
