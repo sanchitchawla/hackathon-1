@@ -26,7 +26,9 @@ class EditUserProfile extends Component {
         super(props);
         this.state = {
             name: "",
-            email: ""
+            email: "",
+            origPassword: "",
+            pass: ""
         }
         this.onSubmitNewName = this.onSubmitNewName.bind(this);
         this.onSubmitNewEmail = this.onSubmitNewEmail.bind(this);
@@ -75,6 +77,35 @@ class EditUserProfile extends Component {
       alert("Sent email ")
     }
 
+    submitPassword = (event) => {
+      event.preventDefault()
+      const password = this.state.pass
+      const origPassword = this.state.origPassword
+      const user = auth.currentUser
+      // console.log(user.email);
+      // console.log(origPassword);
+      // console.log(password);
+      const firebase = require('firebase');
+      let credential = firebase.auth.EmailAuthProvider.credential(user.email, origPassword)
+      console.log("cred", credential)
+      const authPromise = user.reauthenticateWithCredential(credential)
+      this.setState({authPromise: authPromise})
+      // const user = auth.currentUser
+      authPromise.then(() => {
+        user.updatePassword(password).then( () => {
+          this.setState({message: "Password updated"})
+          alert("Password Changed")
+        }).catch( error => {
+          console.log(error)
+          this.setState({message: error.message})
+        })
+      }).catch(error => {
+        const errorStr = error.code === "auth/wrong-password" ? "Current password incorrect" : error.message
+        this.setState({message: errorStr})
+        console.log(error)
+      })
+    }
+
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
@@ -114,8 +145,25 @@ class EditUserProfile extends Component {
                                 />
                                 <Button variant="raised" color="primary" type="submit"> Change Email</Button>
                             </form>
-
-                            <Button variant="raised" color="primary" onClick={this.onClickForgot}>Reset Password</Button>
+                            <form onSubmit={this.submitPassword} autoComplete="off">
+                                <TextField
+                                    id="password"
+                                    label="New password"
+                                    className={classes.pass}
+                                    onChange={this.handleChange('pass')}
+                                    margin="normal"
+                                    type="password"
+                                />
+                                <TextField
+                                    id="origPassword"
+                                    label="Current Password"
+                                    className={classes.origPassword}
+                                    onChange={this.handleChange('origPassword')}
+                                    margin="normal"
+                                    type="password"
+                                />
+                                <Button variant="raised" color="primary" type="submit"> Change password</Button>
+                            </form>
 
                       </Paper>
                     </Grid>

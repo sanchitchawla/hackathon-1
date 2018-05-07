@@ -140,26 +140,3 @@ class Main extends Component {
 }
 
 export default withStyles(styles)(Main);
-
-
-// <form onSubmit={this.onClickReset} autoComplete="off">
-//     <TextField
-//         id="password"
-//         label="New password"
-//         className={classes.password}
-//         onChange={this.handleChange('pass')}
-//         margin="normal"
-//         type="password"
-//     />
-//     <Button variant="raised" color="primary" type="submit"> Change password</Button>
-// </form>
-
-// onClickReset = () => {
-//   const password = this.state.password
-//   console.log(password)
-//   auth.currentUser.updatePassword(password).then(function() {
-//     // Update successful.
-//   }).catch(function(error) {
-//     // An error happened.
-//   });
-// }
