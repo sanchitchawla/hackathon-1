@@ -38,7 +38,7 @@ class Signup extends Component {
         auth.createUserWithEmailAndPassword(email, password)
         .then(authUser => {
           this.handleSignup()
-          this.handleOpen()
+          // this.handleOpen()
         })
         .catch(authError => {
             alert(authError);
@@ -48,7 +48,8 @@ class Signup extends Component {
     handleSignup = () => {
       const user = auth.currentUser;
       user.sendEmailVerification().then(() => {
-        // tell user that email has been send
+        alert("Verification email sent")
+        auth.signOut()
       }).catch((error) => {
         // whatever
       });

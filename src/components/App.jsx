@@ -36,7 +36,10 @@ class App extends Component {
       auth.onAuthStateChanged(user => {
 
         if (user){
-          if (user.providerData.providerId !== "password"){
+          console.log(user.providerData)
+          if (user.providerData[0].providerId !== "password"){
+            console.log("chip");
+            console.log(user.providerData);
             // TODO: no need to check if email is verified
             const nextState = {
                 authenticated: true,
@@ -59,6 +62,7 @@ class App extends Component {
             };
 
             if (user.emailVerified) {
+              console.log("wat")
                 this.setState(nextState,
                   () => {
                     this.props.history.push('/')
