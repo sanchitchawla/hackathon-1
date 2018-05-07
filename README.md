@@ -1,8 +1,5 @@
 # Simple Note
-A firebase & react based webapp for the completion of **[Hackathon 1](https://github.com/sunsern/simple-note/blob/17b144575d66d188ad08141b9050fc2a1ba75b4d/hackathon.md)** _ICCS485: Professional Practices on Software Technology II_
-\[Rapid Application Development\] at Mahidol University Interational College (MUIC).
-
-Bootstrapped from `create-react-app` and [sunsern/simple-note](https://github.com/sunsern/simple-note).
+A firebase & react based webapp for the completion of **[Hackathon 1](https://github.com/sunsern/simple-note/blob/17b144575d66d188ad08141b9050fc2a1ba75b4d/hackathon.md)** 
 
 ## Requirements
  - npm
@@ -10,6 +7,5 @@ Bootstrapped from `create-react-app` and [sunsern/simple-note](https://github.co
 
 ## Features
  - Login (password, Google, Facebook)
- - Persistent note storage
-
+ - Note Storage
 
